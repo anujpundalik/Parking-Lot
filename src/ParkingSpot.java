@@ -18,11 +18,13 @@ public class ParkingSpot {
 
         this.vehicle = vehicle;
         System.out.println("Please proceed to " + this);
+        System.out.println("----------------------------------------------------------------------------");
     }
 
     public void removeVehicle(){
         this.vehicle = null;
         System.out.println(this + " is now available");
+        System.out.println("----------------------------------------------------------------------------");
     }
 
     public int getSpotNumber(){

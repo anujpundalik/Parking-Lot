@@ -43,6 +43,8 @@ public class ParkingLotManager {
 
             levels[i] = metaData + ":" + sectionData;
 
+            System.out.println("----------------------------------------------------------------------------");
+
         }
 
         new ParkingLotManager("Carl Fredickson", levels).startWork();
