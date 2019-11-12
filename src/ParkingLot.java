@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ParkingLot {
@@ -16,15 +13,18 @@ public class ParkingLot {
         }
     }
 
-    private final void addLevel(String level){
+    private void addLevel(String level) {
 
-        String[] levelData = level.split(" ");
+
+        String[] levelData = level.split(":");
+        String[] metaData = levelData[0].split(" ");
+        int[] sectionData = Arrays.stream(levelData[1].split(" ")).mapToInt(Integer::parseInt).toArray();
 
         this.levels.add(new ParkingLevel(
-                Integer.parseInt(levelData[0]),
-                Integer.parseInt(levelData[1]),
-                Integer.parseInt(levelData[2]),
-                levelData[3]
+                Integer.parseInt(metaData[0]),
+                Integer.parseInt(metaData[1]),
+                metaData[2],
+                sectionData
         ));
 
     }
@@ -32,18 +32,22 @@ public class ParkingLot {
 
         List<ParkingLevel> targetLevels = levels.stream().filter(level -> level.canPark(vehicle)).collect(Collectors.toList());
 
+        if (targetLevels.isEmpty()) {
+            System.out.println("Parking Lot is Full");
+            return;
+        }
+        for (ParkingLevel targetLevel : targetLevels) {
 
-        for (ParkingLevel targetLevel : targetLevels){
-
-            try{
+            try {
                 targetLevel.parkVehicle(vehicle);
                 allParkedVehicles.put(vehicle, targetLevel.getLevelNumber());
                 break;
 
-            } catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(" Vehicle not parked " + e.getMessage());
             }
         }
+
     }
 
     public void exitVehicle(String vehicleNumber){

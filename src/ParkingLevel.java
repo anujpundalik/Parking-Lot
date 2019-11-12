@@ -2,32 +2,26 @@ import java.util.*;
 
 public class ParkingLevel {
     private int number;
-    private int sections;
-    private int sectionSize;
-    private int capacity;
+    private final int[] sectionSizes;
 
     private final Collection<String> allowedVehicles;
     private final Collection<ParkingSpot> freeSpots = new HashSet<>();
     private final Map<Vehicle, ParkingSpot> occupiedSpots = new HashMap<>();
+    private int numberOfSections;
 
-    private final int getLevelCapacity(){
 
-        return (sections * sectionSize);
-    }
-
-    public ParkingLevel(int number, int sections, int sectionSize, String vehicleList){
+    public ParkingLevel(int number, int numberOfSections, String vehicleList, int[] sectionSizes) {
         this.number = number;
-        this.sections = sections;
-        this.sectionSize = sectionSize;
-        this.capacity = getLevelCapacity();
+        this.numberOfSections = numberOfSections;
+        this.sectionSizes = sectionSizes;
 
         allowedVehicles = new HashSet<>(Arrays.asList(vehicleList.split(",")));
 
-        for (int i = 0; i < capacity; i++){
+        for (int i = 0; i < numberOfSections; i++) {
 
-            freeSpots.add(new ParkingSpot(number, i + 1));
+            for (int j = 0; j < sectionSizes[i]; j++)
+                freeSpots.add(new ParkingSpot(number, i + 1, j + 1));
         }
-
 
     }
 
@@ -37,15 +31,21 @@ public class ParkingLevel {
 
     }
 
-    public void parkVehicle(Vehicle vehicle){
+    private ParkingSpot findTargetSpot(Vehicle vehicle) {
 
-        ParkingSpot targetSpot = freeSpots.stream()
-                .filter(spot -> spot.isFree())
-                .min(Comparator.comparing(ParkingSpot::getSpotNumber))
+        return freeSpots.stream()
+                .min(Comparator.comparing(ParkingSpot::getSpotNumber)
+                        .thenComparing(ParkingSpot::getSectionNumber))
                 .orElseThrow(() -> new RuntimeException("No free Slot for " + vehicle));
 
+    }
+
+    public void parkVehicle(Vehicle vehicle) {
+
+        ParkingSpot targetSpot = findTargetSpot(vehicle);
+
         targetSpot.addVehicle(vehicle);
-        freeSpots.remove(vehicle);
+        freeSpots.remove(targetSpot);
         occupiedSpots.put(vehicle,targetSpot);
     }
 
@@ -63,7 +63,7 @@ public class ParkingLevel {
     public String toString(){
 
         return (
-            "Level " + number + " has " + sections + " sections and a total capacity of " + capacity
+                "Level " + number + " has " + numberOfSections + " sections"
         );
     }
 }
