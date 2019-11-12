@@ -5,7 +5,7 @@ The Parking Lot consists of N levels.
 Each Parking Level consists of:
 1) M number of sections.
 2) Any number of parking spots.
-3) Vehicles restricted to only one type.
+3) Vehicles restricted to different types.
 
 A vehicle can be parked to the spot closest to the entry. 
 So the vehicles are parked in the fashion for level 1 as an example :
